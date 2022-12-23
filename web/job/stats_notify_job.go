@@ -176,7 +176,7 @@ func (j *StatsNotifyJob) OnReceive() *StatsNotifyJob {
 
 				switch update.CallbackQuery.Data {
 					case "get_usage":
-						msg.Text = "for get your usage send command like this : \n <code>/usage uuid | id</code> \n example : <code>/usage fc3239ed-8f3b-4151-ff51-b183d5182142</code>"
+						msg.Text = "برای استفاده از خود دستوری مانند این ارسال کنید: \n <code>/usage uuid | id شما </code> \n به طور مثال : <code>/usage fc3239ed-8f3b-4151-ff51-b183d5182142</code> \n برای پیدا کردن ID خود به نرم افزار v2ray بروید؛ و دکمه ویرایش سرور را بزنید در آنجا ID خود را بردارید."
 						msg.ParseMode = "HTML"
 					}
 				if _, err := bot.Send(msg); err != nil {
@@ -198,19 +198,19 @@ func (j *StatsNotifyJob) OnReceive() *StatsNotifyJob {
         // Extract the command from the Message.
         switch update.Message.Command() {
         case "help":
-            msg.Text = "What you need?"
+            msg.Text = "چطور می تونم کمکت کنم؟"
 			msg.ReplyMarkup = numericKeyboard
         case "start":
-            msg.Text = "Hi :) \n What you need?"
+            msg.Text = "سلام \n من ربات دستیار هستم  \n surfping.net"
 			msg.ReplyMarkup = numericKeyboard
 
         case "status":
-            msg.Text = "bot is ok."
+            msg.Text = "ربات فعال است."
 
         case "usage":
             msg.Text = j.getClientUsage(update.Message.CommandArguments())
         default:
-            msg.Text = "I don't know that command, /help"
+            msg.Text = "چیزی را اشتباه وارد کرده اید., /راهنمایی"
 			msg.ReplyMarkup = numericKeyboard
 
         }
@@ -226,21 +226,21 @@ func (j *StatsNotifyJob) getClientUsage(id string) string {
 	traffic , err := j.inboundService.GetClientTrafficById(id)
 	if err != nil {
 		logger.Warning(err)
-		return "something wrong!"
+		return "چیزی و اشتباه وارد کردی!"
 	}
 	expiryTime := ""
 	if traffic.ExpiryTime == 0 {
-		expiryTime = fmt.Sprintf("unlimited")
+		expiryTime = fmt.Sprintf("نامحدود")
 	} else {
 		expiryTime = fmt.Sprintf("%s", time.Unix((traffic.ExpiryTime/1000), 0).Format("2006-01-02 15:04:05"))
 	}
 	total := ""
 	if traffic.Total == 0 {
-		total = fmt.Sprintf("unlimited")
+		total = fmt.Sprintf("نامحدود")
 	} else {
 		total = fmt.Sprintf("%s", common.FormatTraffic((traffic.Total)))
 	}
-	output := fmt.Sprintf("💡 Active: %t\r\n📧 Email: %s\r\n🔼 Upload↑: %s\r\n🔽 Download↓: %s\r\n🔄 Total: %s / %s\r\n📅 Expire in: %s\r\n",
+	output := fmt.Sprintf("💡 وضعیت: %t\r\n📧 ایمیل: %s\r\n🔼 آپلود↑: %s\r\n🔽 دانلود↓: %s\r\n🔄 حجم استفاده شده: %s / %s\r\n📅 فعال تا تاریخ: %s\r\n",
 	traffic.Enable, traffic.Email, common.FormatTraffic(traffic.Up), common.FormatTraffic(traffic.Down), common.FormatTraffic((traffic.Up + traffic.Down)),
 	total, expiryTime)
 	
